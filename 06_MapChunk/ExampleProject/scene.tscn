@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://ddlc2qe0ahvlb"]
+
+[ext_resource type="Script" path="res://scripts/mapGenerator.gd" id="1_s6fa2"]
+[ext_resource type="Script" path="res://scripts/gameLogic.gd" id="2_dlttf"]
+[ext_resource type="Script" path="res://scripts/cameraControl.gd" id="3_gi25c"]
+
+[node name="scene" type="Node3D"]
+
+[node name="gamelogic" type="Node" parent="."]
+script = ExtResource("2_dlttf")
+
+[node name="MapGenerator" type="Node3D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("1_s6fa2")
+chunk_size = 2
+chunk_force_update = true
+map_file_path = "res://data/map01.json"
+
+[node name="CameraPrivot" type="Node3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+script = ExtResource("3_gi25c")
+
+[node name="Camera3D" type="Camera3D" parent="CameraPrivot"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 2.12282, 2.12282)
+fov = 60.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.683847, -0.342392, 0.644299, 0, 0.883054, 0.469271, -0.729625, -0.32091, 0.603874, 0, 0, 0)

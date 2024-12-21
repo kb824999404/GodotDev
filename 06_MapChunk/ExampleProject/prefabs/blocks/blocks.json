@@ -1,0 +1,20 @@
+{
+	"0": {
+		"type": "grass",
+		"blocks": [
+			"grass_green",
+		]
+	},
+	"2": {
+		"type": "soil",
+		"blocks": [
+			"soil",
+		]
+	},
+	"3": {
+		"type": "water",
+		"blocks": [
+			"water"
+		]
+	},
+}
