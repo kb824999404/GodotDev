@@ -1,0 +1,105 @@
+[gd_resource type="BehaviorTree" load_steps=25 format=3 uid="uid://hd3yigril08q"]
+
+[ext_resource type="BlackboardPlan" uid="uid://bjfnoy8c2mgqj" path="res://ai/trees/agent_blackboard.tres" id="1_7fe0p"]
+[ext_resource type="Script" path="res://ai/tasks/action/get_purse_target.gd" id="2_0l1ug"]
+[ext_resource type="Script" path="res://ai/tasks/action/find_target_position_close.gd" id="3_cufru"]
+[ext_resource type="Script" path="res://ai/tasks/action/walk_to_target.gd" id="4_xldub"]
+
+[sub_resource type="BTAction" id="BTAction_koivq"]
+script = ExtResource("2_0l1ug")
+output_var = &"purse_target"
+
+[sub_resource type="BTAction" id="BTAction_7d8ed"]
+script = ExtResource("3_cufru")
+target_var = &"purse_target"
+output_var = &"lane_target"
+arrive_var = &"is_arrived"
+move_status_var = &"move_status"
+min_distance = 2.5
+arrived_distance = 3.0
+max_distance = 8.0
+
+[sub_resource type="BTSequence" id="BTSequence_3vcr6"]
+custom_name = "Get Target"
+children = [SubResource("BTAction_koivq"), SubResource("BTAction_7d8ed")]
+
+[sub_resource type="BBVariant" id="BBVariant_j0pyc"]
+type = 4
+saved_value = "walk"
+resource_name = "walk"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_xw708"]
+variable = &"move_status"
+value = SubResource("BBVariant_j0pyc")
+custom_name = "Check If Walk"
+
+[sub_resource type="BBNode" id="BBNode_h5ba2"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_qnkbn"]
+animation_player = SubResource("BBNode_h5ba2")
+animation_name = &"animations/Walk"
+blend = 0.1
+speed = 1.5
+
+[sub_resource type="BTAction" id="BTAction_joy7q"]
+script = ExtResource("4_xldub")
+target_var = &"lane_target"
+speed = 3.0
+
+[sub_resource type="BTTimeLimit" id="BTTimeLimit_ul0x1"]
+time_limit = 0.5
+children = [SubResource("BTAction_joy7q")]
+
+[sub_resource type="BTSequence" id="BTSequence_4unfi"]
+custom_name = "Walk "
+children = [SubResource("BTCheckVar_xw708"), SubResource("BTPlayAnimation_qnkbn"), SubResource("BTTimeLimit_ul0x1")]
+
+[sub_resource type="BBVariant" id="BBVariant_lesgi"]
+type = 4
+saved_value = "run"
+resource_name = "run"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_i7m7y"]
+variable = &"move_status"
+value = SubResource("BBVariant_lesgi")
+custom_name = "Check If Run"
+
+[sub_resource type="BBNode" id="BBNode_hhvyi"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_r1yqh"]
+animation_player = SubResource("BBNode_hhvyi")
+animation_name = &"animations/Walk"
+blend = 0.1
+speed = 3.0
+
+[sub_resource type="BTAction" id="BTAction_wg85j"]
+script = ExtResource("4_xldub")
+target_var = &"lane_target"
+speed = 6.0
+
+[sub_resource type="BTTimeLimit" id="BTTimeLimit_081lk"]
+time_limit = 0.5
+children = [SubResource("BTAction_wg85j")]
+
+[sub_resource type="BTSequence" id="BTSequence_22j8s"]
+custom_name = "Run "
+children = [SubResource("BTCheckVar_i7m7y"), SubResource("BTPlayAnimation_r1yqh"), SubResource("BTTimeLimit_081lk")]
+
+[sub_resource type="BTSelector" id="BTSelector_2b4me"]
+custom_name = "Move To Target"
+children = [SubResource("BTSequence_4unfi"), SubResource("BTSequence_22j8s")]
+
+[sub_resource type="BTSelector" id="BTSelector_c137f"]
+custom_name = "Purse Target"
+children = [SubResource("BTSelector_2b4me")]
+
+[sub_resource type="BTSequence" id="BTSequence_2mixs"]
+children = [SubResource("BTSequence_3vcr6"), SubResource("BTSelector_c137f")]
+
+[resource]
+blackboard_plan = ExtResource("1_7fe0p")
+root_task = SubResource("BTSequence_2mixs")

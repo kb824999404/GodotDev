@@ -1,0 +1,138 @@
+[gd_resource type="BehaviorTree" load_steps=43 format=3 uid="uid://dncb28dbhydb3"]
+
+[ext_resource type="BlackboardPlan" uid="uid://bjfnoy8c2mgqj" path="res://ai/trees/agent_blackboard.tres" id="1_ipp7l"]
+[ext_resource type="BehaviorTree" uid="uid://c8ht54igr7gb0" path="res://ai/trees/subtrees/idle_action.tres" id="2_bqo8d"]
+[ext_resource type="Script" path="res://ai/tasks/status/idle_transition.gd" id="3_55746"]
+[ext_resource type="BehaviorTree" uid="uid://hd3yigril08q" path="res://ai/trees/subtrees/purse_action.tres" id="3_pm0o5"]
+[ext_resource type="BehaviorTree" uid="uid://na76hfgbxyre" path="res://ai/trees/subtrees/attack_action.tres" id="4_mhwfh"]
+[ext_resource type="Script" path="res://ai/tasks/status/purse_transition.gd" id="5_erbli"]
+[ext_resource type="BehaviorTree" uid="uid://bt8qmdj5n3r1m" path="res://ai/trees/subtrees/escape_action.tres" id="5_iorj7"]
+[ext_resource type="BehaviorTree" uid="uid://bha2mf5bw57i4" path="res://ai/trees/subtrees/attacked_action.tres" id="6_3571m"]
+[ext_resource type="Script" path="res://ai/tasks/status/status_transition.gd" id="7_oa3a5"]
+[ext_resource type="Script" path="res://ai/tasks/status/attack_transition.gd" id="7_rexxt"]
+[ext_resource type="Script" path="res://ai/tasks/status/escape_transition.gd" id="9_hkman"]
+[ext_resource type="Script" path="res://ai/tasks/status/attacked_transition.gd" id="11_3gk7m"]
+
+[sub_resource type="BBVariant" id="BBVariant_0v7lh"]
+type = 4
+saved_value = "IDLE"
+resource_name = "IDLE"
+
+[sub_resource type="BTCheckAgentProperty" id="BTCheckAgentProperty_3drwh"]
+property = &"status"
+value = SubResource("BBVariant_0v7lh")
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_njp4i"]
+
+[sub_resource type="BTSubtree" id="BTSubtree_ntfut"]
+subtree = ExtResource("2_bqo8d")
+blackboard_plan = SubResource("BlackboardPlan_njp4i")
+
+[sub_resource type="BTAction" id="BTAction_owd0u"]
+script = ExtResource("3_55746")
+
+[sub_resource type="BTSequence" id="BTSequence_mvu71"]
+custom_name = "Idle "
+children = [SubResource("BTCheckAgentProperty_3drwh"), SubResource("BTSubtree_ntfut"), SubResource("BTAction_owd0u")]
+
+[sub_resource type="BBVariant" id="BBVariant_kyly2"]
+type = 4
+saved_value = "PURSE"
+resource_name = "PURSE"
+
+[sub_resource type="BTCheckAgentProperty" id="BTCheckAgentProperty_gaiqt"]
+property = &"status"
+value = SubResource("BBVariant_kyly2")
+
+[sub_resource type="BTSubtree" id="BTSubtree_6fyp3"]
+subtree = ExtResource("3_pm0o5")
+blackboard_plan = SubResource("BlackboardPlan_njp4i")
+
+[sub_resource type="BTAction" id="BTAction_m43d4"]
+script = ExtResource("5_erbli")
+arrived_distance = 3.0
+max_distance = 8.0
+
+[sub_resource type="BTSequence" id="BTSequence_fp576"]
+custom_name = "Purse"
+children = [SubResource("BTCheckAgentProperty_gaiqt"), SubResource("BTSubtree_6fyp3"), SubResource("BTAction_m43d4")]
+
+[sub_resource type="BBVariant" id="BBVariant_4geqo"]
+type = 4
+saved_value = "ATTACK"
+resource_name = "ATTACK"
+
+[sub_resource type="BTCheckAgentProperty" id="BTCheckAgentProperty_l6jfh"]
+property = &"status"
+value = SubResource("BBVariant_4geqo")
+
+[sub_resource type="BTSubtree" id="BTSubtree_53k5i"]
+subtree = ExtResource("4_mhwfh")
+blackboard_plan = SubResource("BlackboardPlan_njp4i")
+
+[sub_resource type="BTAction" id="BTAction_vj1l7"]
+script = ExtResource("7_rexxt")
+arrived_distance = 3.0
+
+[sub_resource type="BTSequence" id="BTSequence_kglif"]
+custom_name = "Attack"
+children = [SubResource("BTCheckAgentProperty_l6jfh"), SubResource("BTSubtree_53k5i"), SubResource("BTAction_vj1l7")]
+
+[sub_resource type="BBVariant" id="BBVariant_iirgx"]
+type = 4
+saved_value = "ESCAPE"
+resource_name = "ESCAPE"
+
+[sub_resource type="BTCheckAgentProperty" id="BTCheckAgentProperty_o00c3"]
+property = &"status"
+value = SubResource("BBVariant_iirgx")
+
+[sub_resource type="BTSubtree" id="BTSubtree_0ya6r"]
+subtree = ExtResource("5_iorj7")
+blackboard_plan = SubResource("BlackboardPlan_njp4i")
+
+[sub_resource type="BTAction" id="BTAction_1bvjm"]
+script = ExtResource("9_hkman")
+max_distance = 10.0
+
+[sub_resource type="BTSequence" id="BTSequence_ooke3"]
+custom_name = "Escape"
+children = [SubResource("BTCheckAgentProperty_o00c3"), SubResource("BTSubtree_0ya6r"), SubResource("BTAction_1bvjm")]
+
+[sub_resource type="BBVariant" id="BBVariant_qjrv1"]
+type = 4
+saved_value = "ATTACKED"
+resource_name = "ATTACKED"
+
+[sub_resource type="BTCheckAgentProperty" id="BTCheckAgentProperty_xds3f"]
+property = &"status"
+value = SubResource("BBVariant_qjrv1")
+
+[sub_resource type="BTSubtree" id="BTSubtree_13nho"]
+subtree = ExtResource("6_3571m")
+blackboard_plan = SubResource("BlackboardPlan_njp4i")
+
+[sub_resource type="BTAction" id="BTAction_ovus3"]
+script = ExtResource("11_3gk7m")
+
+[sub_resource type="BTSequence" id="BTSequence_xesfe"]
+custom_name = "Attacked"
+children = [SubResource("BTCheckAgentProperty_xds3f"), SubResource("BTSubtree_13nho"), SubResource("BTAction_ovus3")]
+
+[sub_resource type="BTSelector" id="BTSelector_amc5t"]
+custom_name = "Select Action"
+children = [SubResource("BTSequence_mvu71"), SubResource("BTSequence_fp576"), SubResource("BTSequence_kglif"), SubResource("BTSequence_ooke3"), SubResource("BTSequence_xesfe")]
+
+[sub_resource type="BTAction" id="BTAction_e0fmm"]
+script = ExtResource("7_oa3a5")
+
+[sub_resource type="BTSequence" id="BTSequence_nql7q"]
+custom_name = "Status Transition"
+children = [SubResource("BTAction_e0fmm")]
+
+[sub_resource type="BTSequence" id="BTSequence_kg71k"]
+children = [SubResource("BTSelector_amc5t"), SubResource("BTSequence_nql7q")]
+
+[resource]
+blackboard_plan = ExtResource("1_ipp7l")
+root_task = SubResource("BTSequence_kg71k")

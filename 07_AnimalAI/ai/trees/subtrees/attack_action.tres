@@ -1,0 +1,48 @@
+[gd_resource type="BehaviorTree" load_steps=14 format=3 uid="uid://na76hfgbxyre"]
+
+[ext_resource type="BlackboardPlan" uid="uid://bjfnoy8c2mgqj" path="res://ai/trees/agent_blackboard.tres" id="1_8eaom"]
+[ext_resource type="Script" path="res://ai/tasks/action/get_purse_target.gd" id="2_5qpt8"]
+[ext_resource type="Script" path="res://ai/tasks/action/face_to_target.gd" id="2_va1vk"]
+
+[sub_resource type="BTAction" id="BTAction_62jrl"]
+script = ExtResource("2_5qpt8")
+output_var = &"purse_target"
+
+[sub_resource type="BTAction" id="BTAction_c6aha"]
+script = ExtResource("2_va1vk")
+target_var = &"purse_target"
+
+[sub_resource type="BBNode" id="BBNode_4jd6g"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_pq4qq"]
+animation_player = SubResource("BBNode_4jd6g")
+animation_name = &"animations/Attack"
+blend = 0.1
+
+[sub_resource type="BTWait" id="BTWait_dwvft"]
+
+[sub_resource type="BBNode" id="BBNode_2loqb"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_0mpua"]
+animation_player = SubResource("BBNode_2loqb")
+animation_name = &"animations/Idle"
+blend = 0.1
+
+[sub_resource type="BTRandomWait" id="BTRandomWait_qurh8"]
+min_duration = 0.5
+max_duration = 1.0
+
+[sub_resource type="BTSequence" id="BTSequence_vasmw"]
+custom_name = "Pause after action"
+children = [SubResource("BTPlayAnimation_0mpua"), SubResource("BTRandomWait_qurh8")]
+
+[sub_resource type="BTSequence" id="BTSequence_2mixs"]
+children = [SubResource("BTAction_62jrl"), SubResource("BTAction_c6aha"), SubResource("BTPlayAnimation_pq4qq"), SubResource("BTWait_dwvft"), SubResource("BTSequence_vasmw")]
+
+[resource]
+blackboard_plan = ExtResource("1_8eaom")
+root_task = SubResource("BTSequence_2mixs")

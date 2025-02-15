@@ -1,0 +1,58 @@
+[gd_resource type="BehaviorTree" load_steps=16 format=3 uid="uid://c8ht54igr7gb0"]
+
+[ext_resource type="BlackboardPlan" uid="uid://bjfnoy8c2mgqj" path="res://ai/trees/agent_blackboard.tres" id="1_r3ow7"]
+[ext_resource type="Script" path="res://ai/tasks/action/find_random_lane_target.gd" id="2_habjh"]
+[ext_resource type="Script" path="res://ai/tasks/action/walk_to_target.gd" id="3_kk3so"]
+
+[sub_resource type="BBNode" id="BBNode_10ung"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_gmsqq"]
+animation_player = SubResource("BBNode_10ung")
+animation_name = &"animations/Idle"
+blend = 0.1
+
+[sub_resource type="BTRandomWait" id="BTRandomWait_1fe1l"]
+
+[sub_resource type="BTSequence" id="BTSequence_rc0f1"]
+custom_name = "Pause before action"
+children = [SubResource("BTPlayAnimation_gmsqq"), SubResource("BTRandomWait_1fe1l")]
+
+[sub_resource type="BTAction" id="BTAction_v6g1e"]
+script = ExtResource("2_habjh")
+output_var = &"lane_target"
+min_distance = 0.0
+max_distance = 8.0
+
+[sub_resource type="BTSequence" id="BTSequence_0ok14"]
+custom_name = "Select Target"
+children = [SubResource("BTAction_v6g1e")]
+
+[sub_resource type="BBNode" id="BBNode_sc2sb"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_p431f"]
+animation_player = SubResource("BBNode_sc2sb")
+animation_name = &"animations/Walk"
+blend = 0.1
+
+[sub_resource type="BTAction" id="BTAction_kdo5e"]
+script = ExtResource("3_kk3so")
+target_var = &"lane_target"
+speed = 2.0
+
+[sub_resource type="BTTimeLimit" id="BTTimeLimit_gs11l"]
+children = [SubResource("BTAction_kdo5e")]
+
+[sub_resource type="BTSequence" id="BTSequence_y3p61"]
+custom_name = "Walk to target"
+children = [SubResource("BTPlayAnimation_p431f"), SubResource("BTTimeLimit_gs11l")]
+
+[sub_resource type="BTSequence" id="BTSequence_2mixs"]
+children = [SubResource("BTSequence_rc0f1"), SubResource("BTSequence_0ok14"), SubResource("BTSequence_y3p61")]
+
+[resource]
+blackboard_plan = ExtResource("1_r3ow7")
+root_task = SubResource("BTSequence_2mixs")

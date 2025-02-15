@@ -1,0 +1,15 @@
+[gd_resource type="BehaviorTree" load_steps=5 format=3 uid="uid://bha2mf5bw57i4"]
+
+[ext_resource type="BlackboardPlan" uid="uid://bjfnoy8c2mgqj" path="res://ai/trees/agent_blackboard.tres" id="1_ikbnw"]
+[ext_resource type="Script" path="res://ai/tasks/status/show_status.gd" id="2_vybmr"]
+
+[sub_resource type="BTAction" id="BTAction_eht71"]
+script = ExtResource("2_vybmr")
+output_var = &"status"
+
+[sub_resource type="BTSequence" id="BTSequence_2mixs"]
+children = [SubResource("BTAction_eht71")]
+
+[resource]
+blackboard_plan = ExtResource("1_ikbnw")
+root_task = SubResource("BTSequence_2mixs")

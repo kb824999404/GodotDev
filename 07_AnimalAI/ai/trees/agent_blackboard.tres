@@ -1,0 +1,8 @@
+[gd_resource type="BlackboardPlan" format=3 uid="uid://bjfnoy8c2mgqj"]
+
+[resource]
+var/status/name = &"status"
+var/status/type = 4
+var/status/value = "IDLE"
+var/status/hint = 0
+var/status/hint_string = ""

@@ -1,0 +1,52 @@
+[gd_resource type="BehaviorTree" load_steps=14 format=3 uid="uid://bt8qmdj5n3r1m"]
+
+[ext_resource type="BlackboardPlan" uid="uid://bjfnoy8c2mgqj" path="res://ai/trees/agent_blackboard.tres" id="1_j11dw"]
+[ext_resource type="Script" path="res://ai/tasks/action/get_attacker.gd" id="2_kxrpg"]
+[ext_resource type="Script" path="res://ai/tasks/action/find_target_position_far.gd" id="4_gh5si"]
+[ext_resource type="Script" path="res://ai/tasks/action/walk_to_target.gd" id="5_ae7qd"]
+
+[sub_resource type="BTAction" id="BTAction_gaa0d"]
+script = ExtResource("2_kxrpg")
+output_var = &"attacker"
+
+[sub_resource type="BTAction" id="BTAction_oc4lj"]
+script = ExtResource("4_gh5si")
+target_var = &"attacker"
+output_var = &"lane_target"
+arrive_var = &"is_arrived"
+min_distance = 10.0
+max_distance = 12.0
+
+[sub_resource type="BTSequence" id="BTSequence_s3cpa"]
+custom_name = "Get Target"
+children = [SubResource("BTAction_gaa0d"), SubResource("BTAction_oc4lj")]
+
+[sub_resource type="BBNode" id="BBNode_fycow"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_gxryl"]
+animation_player = SubResource("BBNode_fycow")
+animation_name = &"animations/Walk"
+blend = 0.1
+speed = 3.0
+
+[sub_resource type="BTAction" id="BTAction_3bfeq"]
+script = ExtResource("5_ae7qd")
+target_var = &"lane_target"
+speed = 6.0
+
+[sub_resource type="BTTimeLimit" id="BTTimeLimit_8cpsa"]
+time_limit = 0.5
+children = [SubResource("BTAction_3bfeq")]
+
+[sub_resource type="BTSequence" id="BTSequence_0c47m"]
+custom_name = "Escape Target"
+children = [SubResource("BTPlayAnimation_gxryl"), SubResource("BTTimeLimit_8cpsa")]
+
+[sub_resource type="BTSequence" id="BTSequence_2mixs"]
+children = [SubResource("BTSequence_s3cpa"), SubResource("BTSequence_0c47m")]
+
+[resource]
+blackboard_plan = ExtResource("1_j11dw")
+root_task = SubResource("BTSequence_2mixs")
